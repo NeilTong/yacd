@@ -182,6 +182,13 @@ extern int mremap_encrypted(caddr_t addr, size_t len,
                 UIActivity *airdropActivity = [[AirdropOnlyActivity alloc] initWithImage:image appName:self.application.bundleIdentifier];
                 UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[url] applicationActivities:@[airdropActivity]];
                 
+                //iPad compatible
+                if([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+                    activityViewController.popoverPresentationController.sourceView = self.view;
+                    activityViewController.popoverPresentationController.sourceRect = CGRectMake(self.view.frame.size.width/2.0, self.view.frame.size.height/2.0, 1.0, 1.0);
+                    activityViewController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp ;
+                }
+                
                 [self presentViewController:activityViewController animated:YES completion:nil];
             } else {
                 [SVProgressHUD showErrorWithStatus:@"Zipping problem"];
