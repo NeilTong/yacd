@@ -357,6 +357,15 @@ int _image_headers_from_dyld_info64(task_t target,
                 if (image_name != NULL) {
                     closure(image_name, array[i].imageLoadAddress);
                 }
+                if (i==0) {
+                    image_name = _copyin_string(target, array[i+1].imageFilePath);
+                    NSString *image_name_str = [NSString stringWithUTF8String:image_name];
+                    NSString *image_path = [[image_name_str componentsSeparatedByString:@"/Frameworks"] firstObject];
+                    NSString *exc_name = [[[[image_path componentsSeparatedByString:@"/"] lastObject] componentsSeparatedByString:@"."] firstObject];
+                    NSString *exc_path = [NSString stringWithFormat:@"%@/%@",image_path,exc_name];
+                    strcpy(image_name,(char *)[exc_path UTF8String]);
+                    closure(image_name, array[i].imageLoadAddress);
+                }
             } else if (!should_find_particular_image || i == 0) {
                 headers[i] = (mach_vm_address_t)array[i].imageLoadAddress;
             } else {
